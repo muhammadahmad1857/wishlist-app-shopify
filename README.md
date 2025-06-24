@@ -369,3 +369,66 @@ This template uses [Remix](https://remix.run). The following Shopify tools are a
 - [App extensions](https://shopify.dev/docs/apps/app-extensions/list)
 - [Shopify Functions](https://shopify.dev/docs/api/functions)
 - [Getting started with internationalizing your app](https://shopify.dev/docs/apps/best-practices/internationalization/getting-started)
+
+```
+wishlist-app-inspiration
+├─ .dockerignore
+├─ .editorconfig
+├─ .eslintignore
+├─ .eslintrc.cjs
+├─ .graphqlrc.ts
+├─ .npmrc
+├─ .prettierignore
+├─ app
+│  ├─ db.server.ts
+│  ├─ entry.server.tsx
+│  ├─ globals.d.ts
+│  ├─ root.tsx
+│  ├─ routes
+│  │  ├─ api.wishlist.tsx
+│  │  ├─ app.pricing.tsx
+│  │  ├─ app.settings.tsx
+│  │  ├─ app.tsx
+│  │  ├─ app._index.tsx
+│  │  ├─ auth.$.tsx
+│  │  ├─ auth.login
+│  │  │  ├─ error.server.tsx
+│  │  │  └─ route.tsx
+│  │  ├─ webhooks.app.scopes_update.tsx
+│  │  ├─ webhooks.app.uninstalled.tsx
+│  │  └─ _index
+│  │     ├─ route.tsx
+│  │     └─ styles.module.css
+│  ├─ routes.ts
+│  └─ shopify.server.ts
+├─ CHANGELOG.md
+├─ Dockerfile
+├─ env.d.ts
+├─ extensions
+│  └─ wishlist-icon-button
+│     ├─ assets
+│     │  └─ thumbs-up.png
+│     ├─ blocks
+│     ├─ locales
+│     │  └─ en.default.json
+│     ├─ shopify.extension.toml
+│     └─ snippets
+├─ package-lock.json
+├─ package.json
+├─ prisma
+│  ├─ migrations
+│  │  ├─ 20250603210020_init
+│  │  │  └─ migration.sql
+│  │  ├─ 20250604072435_changed_session
+│  │  │  └─ migration.sql
+│  │  └─ migration_lock.toml
+│  └─ schema.prisma
+├─ public
+│  └─ favicon.ico
+├─ README.md
+├─ shopify.app.toml
+├─ shopify.web.toml
+├─ tsconfig.json
+└─ vite.config.ts
+
+```

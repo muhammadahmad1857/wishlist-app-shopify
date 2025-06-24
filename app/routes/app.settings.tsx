@@ -8,30 +8,81 @@ import {
   TextField,
   Button,
 } from "@shopify/polaris";
-import { TitleBar } from "@shopify/app-bridge-react";
 import { useState } from "react";
-import {ActionFunctionArgs, json} from "@remix-run/node"
-import { Form, useLoaderData } from "@remix-run/react";
-export const loader = async () => {
-  let settings = {
-    name: "App Name",
-    description: "My App",
-  };
+import {
+  json,
+  type LoaderFunction,
+  type ActionFunction,
+} from "@remix-run/node";
+import { useLoaderData, Form } from "@remix-run/react";
+import { authenticate } from "../shopify.server";
+
+// Import Prisma db
+import db from "../db.server";
+
+// Type for Settings (matching your Prisma 'settings' table)
+type Settings = {
+  id?: number; // optional if Prisma auto-generates
+  name: string;
+  description: string;
+  shop: string;
+};
+
+export const loader: LoaderFunction = async ({ request }) => {
+  const { session } = await authenticate.admin(request);
+
+  let settings = await db.settings.findFirst({
+    where: {
+      shop: session.shop,
+    },
+  });
+
+  if (!settings) {
+    settings = { name: "", description: "", shop: session.shop, id: 1234 };
+  }
+
   return json(settings);
 };
-export default function Settings() {
-  const settings = useLoaderData<typeof loader>();
-  const [formState, setFormState] = useState(settings);
 
-  const handleChange = (field: "name" | "description", value: string) => {
+export const action: ActionFunction = async ({ request }) => {
+  const formData = await request.formData();
+  const data = Object.fromEntries(formData);
+
+  const { session } = await authenticate.admin(request);
+
+  const name = data.name as string;
+  const description = data.description as string;
+
+  // update database
+  await db.settings.upsert({
+    where: { shop: session.shop },
+    update: {
+      name,
+      description,
+      shop: session.shop,
+    },
+    create: {
+      name,
+      description,
+      shop: session.shop,
+    },
+  });
+
+  return json({ name, description, shop: session.shop });
+};
+
+export default function SettingsPage() {
+  const settings = useLoaderData<Settings>(); // Type the loader data
+
+  const [formState, setFormState] = useState<Settings>(settings);
+
+  const handleChange = (field: keyof Settings, value: string) => {
     setFormState((prev) => ({ ...prev, [field]: value }));
-    console.log(`${field} changed to:`, value);
   };
 
   return (
     <Page>
-      <TitleBar title="Settings" />
-
+      <ui-title-bar title="Settings" />
       <BlockStack gap={{ xs: "800", sm: "400" }}>
         <InlineGrid columns={{ xs: "1fr", md: "2fr 5fr" }} gap="400">
           <Box
@@ -41,15 +92,13 @@ export default function Settings() {
           >
             <BlockStack gap="400">
               <Text as="h3" variant="headingMd">
-                App Configuration
+                Settings
               </Text>
               <Text as="p" variant="bodyMd">
-                Configure your wishlist app settings such as name and
-                description.
+                Update app settings and preferences.
               </Text>
             </BlockStack>
           </Box>
-
           <Card roundedAbove="sm">
             <Form method="POST">
               <BlockStack gap="400">
@@ -68,10 +117,7 @@ export default function Settings() {
                   autoComplete="off"
                   multiline
                 />
-                <div style={{ display: "flex", justifyContent: "flex-end", }}>
-                <Button fullWidth={false} variant="primary" submit={true}>
-                  Save
-                </Button></div>
+                <Button submit>Save</Button>
               </BlockStack>
             </Form>
           </Card>
@@ -80,13 +126,3 @@ export default function Settings() {
     </Page>
   );
 }
-
-export const action = async ({ request }: ActionFunctionArgs) => {
-  const formData = await request.formData();
-  console.log("Form data received:", formData);
-  const settings = Object.fromEntries(formData);
-  console.log("Settings submitted:", settings);
-
-  return json({ success: true, message: "Settings saved successfully!" });
-};
-

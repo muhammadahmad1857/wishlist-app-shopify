@@ -1,0 +1,189 @@
+<div class="wishlist-inspire__icon wishlist-inspire__icon--{{ block.settings.position }}">
+  <button 
+    type="button" 
+    id="wishlist-button-{{ block.id }}"
+    data-customer-id="{{ customer.id }}"
+    data-product-id="{{ product.id }}"
+    data-shop="{{ shop.permanent_domain }}"
+    {% unless customer %} disabled {% endunless %}
+  >
+    <svg 
+      id="wishlist-icon-{{ block.id }}"
+      class="wishlist-inspire__icon--svg"
+      viewBox="0 0 24 24" stroke-width="2" stroke="#000"
+      fill="#fff"
+    >
+      <title>Add to Wishlist</title>
+      <path d="M12 21.35l-1.45-1.32C5.4 15.73 2 12.27 2 8.5 
+        2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09
+        C13.09 3.81 14.76 3 16.5 3 
+        19.58 3 22 5.42 22 8.5c0 3.77-3.4 7.23
+        -8.55 11.53L12 21.35z"/>
+    </svg>
+    {% if block.settings.show_text and block.settings.text != blank %}
+      <span class="wishlist-inspire__icon--text">{{ block.settings.text }}</span>
+    {% endif %}
+  </button>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const id = "{{ block.id }}";
+  const button = document.getElementById(`wishlist-button-${id}`);
+  const icon = document.getElementById(`wishlist-icon-${id}`);
+
+  const customerId = button.dataset.customerId;
+  const productId = button.dataset.productId;
+  const shop = button.dataset.shop;
+  const appUrl = "https://barrel-searched-terry-spatial.trycloudflare.com/";
+
+  let wishlisted = false;
+
+  if (!customerId) {
+    button.classList.add('wishlist-inspire__icon--disabled');
+    button.disabled = true;
+    return;
+  }
+
+  fetch(`${appUrl}api/wishlist?customerId=${customerId}&productId=${productId}&shop=${shop}`)
+    .then(res => res.json())
+    .then(result => {
+      if (result.data?.length > 0) {
+        wishlisted = true;
+        updateIcon();
+      }
+    });
+
+  button.addEventListener('click', function () {
+    const formData = new FormData();
+    formData.append("customerId", customerId);
+    formData.append("productId", productId);
+    formData.append("shop", shop);
+    formData.append("_action", wishlisted ? "DELETE" : "CREATE");
+
+    fetch(`${appUrl}api/wishlist`, {
+      method: 'POST',
+      body: formData,
+    })
+    .then(res => res.json())
+    .then(result => {
+      wishlisted = result.wishlisted;
+      updateIcon();
+    });
+  });
+
+  function updateIcon() {
+    const activeColor = "{{ block.settings.colour }}";
+    icon.setAttribute("fill", wishlisted ? activeColor : "#fff");
+  }
+});
+</script>
+
+<style>
+.wishlist-inspire__icon {
+  display: flex;
+  margin: 1rem auto;
+}
+
+.wishlist-inspire__icon--left {
+  justify-content: flex-start;
+}
+
+.wishlist-inspire__icon--center {
+  justify-content: center;
+}
+
+.wishlist-inspire__icon--right {
+  justify-content: flex-end;
+}
+
+.wishlist-inspire__icon button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  padding: 0.3rem;
+  transition: all 0.2s ease-in-out;
+}
+
+.wishlist-inspire__icon--svg {
+  width: {{ block.settings.icon_size }}px;
+  height: {{ block.settings.icon_size }}px;
+  transition: fill 0.3s ease;
+}
+
+.wishlist-inspire__icon button:hover .wishlist-inspire__icon--svg {
+  fill: {{ block.settings.hover_colour }};
+}
+
+.wishlist-inspire__icon--disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.wishlist-inspire__icon--text {
+  font-size: 0.9rem;
+  color: #333;
+}
+</style>
+
+{% schema %}
+{
+  "name": "Wishlist Icon",
+  "target": "section",
+  "settings": [
+    {
+      "type": "product",
+      "id": "product",
+      "label": "Product",
+      "autofill": true
+    },
+    {
+      "type": "text",
+      "id": "text",
+      "label": "Label Text",
+      "default": "Add to wishlist"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_text",
+      "label": "Show Label Text",
+      "default": true
+    },
+    {
+      "type": "color",
+      "id": "colour",
+      "label": "Icon Fill Color (Selected)",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "hover_colour",
+      "label": "Icon Hover Color",
+      "default": "#ff0000"
+    },
+    {
+      "type": "range",
+      "id": "icon_size",
+      "label": "Icon Size (px)",
+      "min": 16,
+      "max": 64,
+      "step": 1,
+      "default": 32
+    },
+    {
+      "type": "select",
+      "id": "position",
+      "label": "Icon Alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "center"
+    }
+  ]
+}
+{% endschema %}

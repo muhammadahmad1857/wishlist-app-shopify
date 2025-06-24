@@ -3,7 +3,7 @@
 client_id = "d7814f1b4012b0c26dd7877ca51fead2"
 name = "wishlist-app-inspiration"
 handle = "wishlist-app-inspiration"
-application_url = "https://emotional-recommends-fill-tractor.trycloudflare.com"
+application_url = "https://radius-airline-adoption-butler.trycloudflare.com"
 embedded = true
 
 [build]
@@ -27,9 +27,9 @@ scopes = "write_products"
 
 [auth]
 redirect_urls = [
-  "https://emotional-recommends-fill-tractor.trycloudflare.com/auth/callback",
-  "https://emotional-recommends-fill-tractor.trycloudflare.com/auth/shopify/callback",
-  "https://emotional-recommends-fill-tractor.trycloudflare.com/api/auth/callback"
+  "https://radius-airline-adoption-butler.trycloudflare.com/auth/callback",
+  "https://radius-airline-adoption-butler.trycloudflare.com/auth/shopify/callback",
+  "https://radius-airline-adoption-butler.trycloudflare.com/api/auth/callback"
 ]
 
 [pos]
