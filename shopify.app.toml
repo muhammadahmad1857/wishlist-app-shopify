@@ -3,12 +3,12 @@
 client_id = "d7814f1b4012b0c26dd7877ca51fead2"
 name = "wishlist-app-inspiration"
 handle = "wishlist-app-inspiration"
-application_url = "https://radius-airline-adoption-butler.trycloudflare.com"
+application_url = "https://wishlist-app-shopify.vercel.app/"
 embedded = true
 
 [build]
 include_config_on_deploy = true
-automatically_update_urls_on_dev = true
+automatically_update_urls_on_dev = false
 
 [webhooks]
 api_version = "2025-04"
@@ -27,9 +27,9 @@ scopes = "write_products"
 
 [auth]
 redirect_urls = [
-  "https://radius-airline-adoption-butler.trycloudflare.com/auth/callback",
-  "https://radius-airline-adoption-butler.trycloudflare.com/auth/shopify/callback",
-  "https://radius-airline-adoption-butler.trycloudflare.com/api/auth/callback"
+  "https://wishlist-app-shopify.vercel.app/auth/callback",
+  "https://wishlist-app-shopify.vercel.app/auth/shopify/callback",
+  "https://wishlist-app-shopify.vercel.app/api/auth/callback"
 ]
 
 [pos]

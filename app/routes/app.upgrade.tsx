@@ -14,7 +14,7 @@ export const loader: LoaderFunction = async ({ request }) => {
         //@ts-ignore
         plan: BILLING_PLAN_KEYS.MONTHLY,
         isTest: true,
-        returnUrl: `https://admin.shopify.com/store/${myShop}/apps/${process.env.APP_NAME}/app/pricing`,
+        returnUrl: `https://admin.shopify.com/store/${myShop}/apps/wishlist-app-inspiration/app/pricing`,
       }),
   });
 
